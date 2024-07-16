@@ -1,0 +1,24 @@
+patterns:
+  - method: "GET"
+    host: "example.com"
+    path: "/"
+    response:
+      status_code: 200
+      headers: |
+        Content-Type: application/json
+      body: |
+        {
+          "message": "Hello, World!"
+        }
+
+  - method: "GET"
+    host: "www.google.com"
+    path: "/"
+    response:
+      status_code: 200
+      headers: |
+        Content-Type: application/json
+      body: |
+        {
+          "message": "Hello, Google!"
+        }

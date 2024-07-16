@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EMX Interceptor UI</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@andypf/json-viewer@2.1.4/dist/iife/index.min.js"></script>
+  </head>
+
+  <body class="bg-gray-100 p-5">
+    <div class="container mx-auto my-8">
+      <h1 class="text-3xl font-bold mb-5">EMX Interceptor UI</h1>
+
+      <!-- Filter -->
+      <div class="mb-10">
+        <label for="filter" class="text-sm font-medium text-gray-500">
+          Filter
+        </label>
+
+        <input
+          type="text"
+          id="filter"
+          class="w-full mt-1 p-2 border border-gray-200 rounded"
+          placeholder="Search by method, host, or path"
+        />
+        <p class="text-xs text-gray-500 mt-1">
+          Will affect future data fetching
+        </p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table id="data-table" class="min-w-full bg-white text-left">
+          <thead>
+            <tr>
+              <th
+                class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Code
+              </th>
+              <th
+                class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Method
+              </th>
+              <th
+                class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Host
+              </th>
+              <th
+                class="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Path
+              </th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal for displaying full data -->
+    <div
+      id="modal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center flex"
+    >
+      <div
+        class="bg-white p-5 rounded-lg w-3/4 overflow-y-auto"
+        id="modal-content"
+      >
+        <div class="grid grid-cols-1 gap-4 float-right">
+          <button
+            id="close-modal"
+            class="py-2 px-4 text-gray-900 rounded my-2 hover:bg-gray-50"
+          >
+            &#x2715;
+          </button>
+        </div>
+        <div
+          id="full-data"
+          class="overflow-auto"
+          style="max-height: 90vh"
+        ></div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      let refreshIntervalId = 200;
+
+      // get refresh interval from query string
+      const urlParams = new URLSearchParams(window.location.search);
+      const refreshInterval = urlParams.get("refreshInterval");
+      if (refreshInterval) {
+        refreshIntervalId = parseInt(refreshInterval);
+      } else {
+        // redirect to the same page with the refresh interval
+        window.location.href = window.location
+          .toString()
+          .concat("?refreshInterval=", refreshIntervalId);
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        let cursor = 0;
+        let isLoaded = false;
+
+        /* ========================================
+         * DOM Elements
+         * ======================================== */
+        const tableBody = document.querySelector("#table-body");
+        const modal = document.getElementById("modal");
+        const modalContent = document.getElementById("modal-content");
+        const fullDataElement = document.getElementById("full-data");
+        const closeModalButton = document.getElementById("close-modal");
+        const filterInput = document.getElementById("filter");
+
+        /* ========================================
+         * Filter Function
+         * ======================================== */
+        let filterValue = "";
+        filterInput.addEventListener("input", function () {
+          filterValue = filterInput.value.toLowerCase();
+        });
+
+        // Update cursor
+        fetch(`/api/v1/log?limit=1&reverse=1&${filterValue}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const _data = JSON.parse(JSON.stringify(data.data));
+
+            // Insert new data at the top
+            populateTable(_data);
+
+            // Update cursor
+            cursor = _data[0].id;
+
+            // Set first load to true
+            isLoaded = true;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        /* ========================================
+         * Data Fetching
+         * ======================================== */
+        let getData = () => {
+          if (isLoaded) {
+            fetch(`/api/v1/log?limit=1&cursor=${cursor}&${filterValue}`)
+              .then((response) => response.json())
+              .then((data) => {
+                const _data = JSON.parse(JSON.stringify(data.data));
+
+                // Insert new data at the top
+                populateTable(_data);
+
+                // Update cursor
+                cursor = _data.length > 0 ? _data[0].id : cursor;
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        };
+
+        /* ========================================
+         * Data Manipulation
+         * ======================================== */
+        function populateTable(data) {
+          for (const item of data) {
+            const row = document.createElement("tr");
+            row.classList.add("cursor-pointer");
+            row.addEventListener("click", () => showFullData(item));
+
+            const cellStatusCode = document.createElement("td");
+            cellStatusCode.classList.add(
+              "py-2",
+              "px-4",
+              "border-b",
+              "border-gray-200",
+              "text-nowrap"
+            );
+            cellStatusCode.textContent = item.response.statusCode;
+
+            const cellMethod = document.createElement("td");
+            cellMethod.classList.add(
+              "py-2",
+              "px-4",
+              "border-b",
+              "border-gray-200",
+              "text-nowrap"
+            );
+            cellMethod.textContent = item.method;
+
+            const cellHost = document.createElement("td");
+            cellHost.classList.add(
+              "py-2",
+              "px-4",
+              "border-b",
+              "border-gray-200",
+              "text-nowrap"
+            );
+            cellHost.textContent = item.host;
+
+            const cellPath = document.createElement("td");
+            cellPath.classList.add(
+              "py-2",
+              "px-4",
+              "border-b",
+              "border-gray-200",
+              "text-nowrap"
+            );
+            cellPath.textContent = item.url.path;
+
+            row.appendChild(cellStatusCode);
+            row.appendChild(cellMethod);
+            row.appendChild(cellHost);
+            row.appendChild(cellPath);
+
+            // Insert the new row at the top
+            tableBody.insertBefore(row, tableBody.firstChild);
+          }
+        }
+
+        function showFullData(item) {
+          // fetch data from the server
+          // to get the full data
+          fetch(`/api/v1/log/${item.id}`)
+            .then((response) => response.json())
+            .then((fullData) => {
+              if (fullData.data) item = fullData.data;
+
+              fullDataElement.innerHTML = "";
+
+              const jsonViewer = document.createElement("andypf-json-viewer");
+
+              jsonViewer.data = JSON.stringify(item);
+              jsonViewer.id = "json";
+              jsonViewer.expanded = 2;
+              jsonViewer.indent = 2;
+              jsonViewer.showDataTypes = false;
+              jsonViewer.theme = "google-light";
+              jsonViewer.showToolbar = true;
+              jsonViewer.showSize = true;
+              jsonViewer.showCopy = true;
+              jsonViewer.expandIconType = "square";
+
+              fullDataElement.appendChild(jsonViewer);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+
+          modal.classList.remove("hidden");
+
+          /* ========================================
+           * Close Modal Function
+           * ======================================== */
+          modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+              closeModal();
+            }
+          });
+        }
+
+        function closeModal() {
+          modal.classList.add("hidden");
+        }
+
+        closeModalButton.addEventListener("click", closeModal);
+
+        // Fetch initial data and set up periodic refresh
+        getData();
+        setInterval(getData, refreshIntervalId); // Fetch data every 300 milliseconds
+      });
+    </script>
+  </body>
+</html>

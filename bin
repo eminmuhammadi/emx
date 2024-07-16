@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# exit when any command fails
+set -ex
+
+CERT_FOLDER=_certs
+
+if [ ! -d "$CERT_FOLDER" ]; then
+  echo "No certificates found"
+  echo "Run sh ./openssl_gen.sh to generate certificates"
+fi
+
+go build -o ./emx -gcflags=-trimpath=$GOPATH -asmflags=-trimpath=$GOPATH -ldflags="-w -s" -gcflags "-N -l" -a .
+
+chmod +x ./emx
+
+# Run
+export PROXY_HOST=0.0.0.0
+export PROXY_PORT=8080
+export APP_HOST=127.0.0.1
+export APP_PORT=8888
+export PROXY_DECRYPT_CERT_FILE=$CERT_FOLDER/ca.crt
+export PROXY_DECRYPT_KEY_FILE=$CERT_FOLDER/ca.key
+export TLS_MODE=tls
+export TLS_CA_FILE=$CERT_FOLDER/ca.crt
+export TLS_CERT_FILE=$CERT_FOLDER/server.crt
+export TLS_KEY_FILE=$CERT_FOLDER/server.key
+export SQLITE_DSN=file:emxdb.sqlite?cache=shared  # :memory:?cache=shared for in-memory database
+export MOCK_FILE=mock.yaml
+
+./emx
