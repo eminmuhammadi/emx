@@ -119,14 +119,14 @@ patterns:
 ```
 
 ```sh
-$ curl --proxy 127.0.0.1:8080 --ssl-no-revoke https://example.com
+$ curl --proxy 127.0.0.1:8080 --insecure https://example.com
 {
   "message": "Hello, World!"
 }
 ```
 
 ```sh
-$ curl --proxy 127.0.0.1:8080 --ssl-no-revoke https://www.google.com
+$ curl --proxy 127.0.0.1:8080 --insecure https://www.google.com
 {
   "message": "Hello, Google!"
 }
