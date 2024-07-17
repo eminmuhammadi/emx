@@ -1,6 +1,6 @@
 # emx
 
-Real-time proxy interceptor which supports application layer and database.
+**emx** is a real-time proxy interceptor designed to support both the application layer and database interactions.
 
 ![emx demo](./_img.gif)
 
@@ -11,11 +11,13 @@ SELECT req.method,
        req.request_uri,
        req.body,
        res.body
-    FROM requests req,
-         responses res
-    WHERE req.session_id = res.session_id
-    ORDER BY req.created_at DESC;
+FROM requests req,
+     responses res
+WHERE req.session_id = res.session_id
+ORDER BY req.created_at DESC;
 ```
+
+### Features
 
 - GET /api/v1/log
 - GET /api/v1/log/:id
@@ -24,10 +26,12 @@ SELECT req.method,
 
 ## Installation
 
-Required binaries
+### Prerequisites
 
-- `go` https://go.dev/doc/install
-- `openssl` https://wiki.openssl.org/index.php/Binaries
+- **Go**: Install from [go.dev](https://go.dev/doc/install)
+- **OpenSSL**: Binaries available [here](https://wiki.openssl.org/index.php/Binaries)
+
+### Build and Install
 
 ```sh
 go build -o ./emx . && mv emx /usr/local/bin
@@ -35,9 +39,9 @@ go build -o ./emx . && mv emx /usr/local/bin
 
 ## Usage
 
-To start emx you need to type following on terminal:
+### Configuration
 
-- Set configuration for emx
+Before starting **emx**, configure the following environment variables:
 
 ```sh
 export PROXY_HOST=0.0.0.0
@@ -50,47 +54,39 @@ export TLS_MODE=off
 export SQLITE_DSN=:memory:?cache=shared
 ```
 
-`TLS_MODE` is required only for application. Proxy server will decrypt https using `PROXY_DECRYPT_CERT_FILE` and `PROXY_DECRYPT_KEY_FILE` files.
+- **TLS_MODE**: Required for the application; the proxy server decrypts HTTPS using `PROXY_DECRYPT_CERT_FILE` and `PROXY_DECRYPT_KEY_FILE`.
 
-- Run
+### Start
 
-```
+Run **emx**:
+
+```sh
 emx
 ```
 
+or rebuilt and run it using:
 
-or 
-
-```
+```sh
 chmod +x ./bin && ./bin
 ```
 
-Visit http://127.0.0.1:8888/ui to see proxy logs.
+Visit [http://127.0.0.1:8888/ui](http://127.0.0.1:8888/ui) to view proxy logs.
 
-### Environment
+### Environment Variables
 
-List of environment variables:
-
-- TLS_MODE (`off`, `tls`, `mutual_tls`) - required
-- TLS_CERT_FILE (`path_to_file`) - optional for `off`
-- TLS_KEY_FILE (`path_to_file`) - optional for `off`
-- TLS_CA_FILE (`path_to_file`) - optional for `off`
-- PROXY_HOST (`0.0.0.0`) - required
-- PROXY_PORT (`8080`) - required
-- PROXY_DECRYPT_CERT_FILE (`path_to_file`) - required
-- PROXY_DECRYPT_KEY_FILE (`path_to_file`) - required
-- PROXY_VERBOSE (`bool`) - optional (default: `false`)
-- APP_HOST (`0.0.0.0`) - required
-- APP_PORT (`8443`) - required
-- SQL_VERBOSE  (`bool`) - optional (default: `false`)
-- SQLITE_DSN (`file:emxdb.sqlite?cache=shared`) - optional (default: `:memory:?cache=shared`)
-- MOCK_FILE (`path_to_file`) optional (example: `mock.yaml`)
+- **TLS_MODE**: (`off`, `tls`, `mutual_tls`) - required
+- **TLS_CERT_FILE**, **TLS_KEY_FILE**, **TLS_CA_FILE**: Optional paths for TLS configurations
+- **PROXY_HOST**, **PROXY_PORT**: Required for proxy setup
+- **PROXY_DECRYPT_CERT_FILE**, **PROXY_DECRYPT_KEY_FILE**: Required for HTTPS decryption
+- **PROXY_VERBOSE**, **SQL_VERBOSE**: Optional boolean flags (default: `false`)
+- **APP_HOST**, **APP_PORT**: Required for application setup
+- **SQLITE_DSN**: Optional SQLite database configuration (default: `:memory:?cache=shared`)
+- **MOCK_FILE**: Optional path to YAML file for API mocking
 
 ## Mocking
 
-You can easily mock api response using following like configuration file:
+Configure API responses using a YAML file (`mock.yaml`):
 
-mock.yaml
 ```yaml
 patterns:
   - method: "GET"
@@ -132,18 +128,17 @@ $ curl --proxy 127.0.0.1:8080 --insecure https://www.google.com
 }
 ```
 
-## Intercepting HTTPS
+### Intercepting HTTPS
 
-To intercept HTTPS requests you need to trust CA cert file. If you did not generate CA cert file, you can run following command on terminal:
+To intercept HTTPS requests, trust the CA cert file (`_certs/ca.crt`). If not generated, run the following command:
 
 ```sh
 chmod +x ./openssl_gen.sh && ./openssl_gen.sh
 ```
 
-Distribute generated `_certs/ca.crt` file to your device, and trust this certificate.
+Distribute `_certs/ca.crt` and follow your device's trust procedures:
 
-How to trust certificate:
-- Windows  https://learn.microsoft.com/en-us/windows-hardware/drivers/install/trusted-root-certification-authorities-certificate-store
-- MacOS https://support.apple.com/en-gb/guide/keychain-access/kyca11871/mac
-- Iphone https://support.apple.com/en-us/102390
-- Android https://developer.android.com/privacy-and-security/security-ssl#Pinning
+- Windows: [Learn more](https://learn.microsoft.com/en-us/windows-hardware/drivers/install/trusted-root-certification-authorities-certificate-store)
+- MacOS: [Learn more](https://support.apple.com/en-gb/guide/keychain-access/kyca11871/mac)
+- iPhone: [Learn more](https://support.apple.com/en-us/102390)
+- Android: [Learn more](https://developer.android.com/privacy-and-security/security-ssl#Pinning)
