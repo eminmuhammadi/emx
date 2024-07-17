@@ -86,7 +86,7 @@ List of environment variables:
 - SQLITE_DSN (`file:emxdb.sqlite?cache=shared`) - optional (default: `:memory:?cache=shared`)
 - MOCK_FILE (`path_to_file`) optional (example: `mock.yaml`)
 
-## Mock Support
+## Mocking
 
 You can easily mock api response using following like configuration file:
 
