@@ -38,7 +38,7 @@ curl -o emx.tar.gz -L https://github.com/eminmuhammadi/emx/releases/download/v1.
 tar -xf emx.tar.gz && chmod +x ./emx && sudo mv ./emx /usr/local/bin
 ```
 
-For more details, continue to [Start](?tab=readme-ov-file#start) to address environment variables issues.
+For more details, go to [Start](?tab=readme-ov-file#start) to solve environment variables issues.
 
 ## Build
 
