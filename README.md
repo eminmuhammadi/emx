@@ -28,6 +28,18 @@ ORDER BY req.created_at DESC;
 
 You can download binary files for each platform from [the latest releases](https://github.com/eminmuhammadi/emx/releases).
 
+Example on darwin:
+
+```sh
+curl -o emx.tar.gz -L https://github.com/eminmuhammadi/emx/releases/download/v1.0.0/emx_1.0.0_darwin_amd64.tar.gz
+```
+
+```sh
+tar -xf emx.tar.gz && chmod +x ./emx && sudo mv ./emx /usr/local/bin
+```
+
+For more details, continue to [Start](?tab=readme-ov-file#start) to address environment variables issues.
+
 ## Build
 
 ### Prerequisites
