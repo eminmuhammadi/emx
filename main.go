@@ -71,18 +71,20 @@ func main() {
 	*/
 	<-shutdown // Wait for the shutdown signal
 
-	sql.CloseConnection(sql.Database)
+	if err := sql.CloseConnection(sql.Database); err != nil {
+		logger.Log.Printf("error while closing database connection: %v", err)
+	}
 
 	logger.Log.Println("Shutting down application server...")
 
 	if err := httpServer.Shutdown(); err != nil {
-		logger.Log.Fatalf("error while shutting down server: %v", err)
+		logger.Log.Printf("error while shutting down server: %v", err)
 	}
 
 	logger.Log.Println("Shutting down proxy server...")
 
 	if err := proxyServer.Shutdown(ctx); err != nil {
-		logger.Log.Fatalf("error while shutting down proxy server: %v", err)
+		logger.Log.Printf("error while shutting down proxy server: %v", err)
 	}
 
 	wg.Wait() // Wait for all goroutines to finish

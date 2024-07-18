@@ -76,7 +76,9 @@ func RequestHandler(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *h
 	reqData.Body = reqBody
 
 	// Save into database
-	request.Create(reqData)
+	if err := request.Create(reqData); err != nil {
+		logger.Log.Printf("Error saving request data: %s", err)
+	}
 
 	// Restore the original request body
 	req.Body = io.NopCloser(strings.NewReader(reqBody))
@@ -96,7 +98,9 @@ func ResponseHandler(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response 
 	respData.Body = respBody
 
 	// Save into database
-	response.Create(respData)
+	if err := response.Create(respData); err != nil {
+		logger.Log.Printf("Error saving response data: %s", err)
+	}
 
 	// Restore the original response body
 	resp.Body = io.NopCloser(strings.NewReader(respBody))
