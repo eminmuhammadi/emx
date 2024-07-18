@@ -26,6 +26,10 @@ ORDER BY req.created_at DESC;
 
 ## Installation
 
+You can download binary files for each platform from [the latest releases](https://github.com/eminmuhammadi/emx/releases).
+
+## Build
+
 ### Prerequisites
 
 - **Go**: Install from [go.dev](https://go.dev/doc/install)
