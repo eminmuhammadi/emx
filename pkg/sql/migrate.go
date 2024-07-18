@@ -15,6 +15,11 @@ limitations under the License.
 */
 package sql
 
+import "github.com/eminmuhammadi/emx/pkg/logger"
+
 func Migrate(models ...interface{}) {
-	Database.AutoMigrate(models...)
+	err := Database.AutoMigrate(models...)
+	if err != nil {
+		logger.Log.Fatalf("Error migrating models: %v", err)
+	}
 }
