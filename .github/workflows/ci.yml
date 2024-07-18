@@ -1,4 +1,15 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "**/**/*.go"
+      - "**/*.go"
+      - "*.go"
+  pull_request:
+    paths:
+      - "**/**/*.go"
+      - "**/*.go"
+      - "*.go"
+
 name: Lint
 
 jobs:
