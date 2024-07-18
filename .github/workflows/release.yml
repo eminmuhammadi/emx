@@ -45,7 +45,6 @@ jobs:
         # List of GOOS and GOARCH pairs from `go tool dist list`
         goosarch:
           - windows/amd64
-          - windows/arm
           - windows/arm64
           - darwin/amd64
           - darwin/arm64
