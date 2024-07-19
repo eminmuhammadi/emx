@@ -23,6 +23,7 @@ import (
 	"github.com/eminmuhammadi/emx/app/request"
 	"github.com/eminmuhammadi/emx/app/response"
 	"github.com/eminmuhammadi/emx/pkg/sql"
+	"github.com/eminmuhammadi/emx/pkg/util"
 	"github.com/valyala/fasthttp"
 )
 
@@ -52,6 +53,7 @@ func Get(id int64) (Log, error) {
 func List(cursor int, limit int, reverse bool, args *fasthttp.Args) ([]Log, error) {
 	var reqList []request.Request
 	var reqLogList []Log
+	var reqDetails request.Request
 
 	// set order
 	order := "asc"
@@ -59,29 +61,45 @@ func List(cursor int, limit int, reverse bool, args *fasthttp.Args) ([]Log, erro
 		order = "desc"
 	}
 
-	// convert argsStr to urlQuery
+	// get args string
 	argsStr := args.String()
-	query := fmt.Sprintf("id > %d", cursor)
+
+	// Create db query chain
+	db := sql.Database
+
+	// set cursor
+	db = db.Where("id > ?", cursor)
+
 	if argsStr != "" {
 		splitedArgs := strings.Split(argsStr, "&")
 		for _, arg := range splitedArgs {
 			splitedArg := strings.Split(arg, "=")
-			if splitedArg[0] == "cursor" || splitedArg[0] == "limit" || splitedArg[0] == "reverse" {
+			if len(splitedArg) != 2 {
 				continue
 			}
 
-			if len(splitedArg) == 2 {
-				query += " AND " + splitedArg[0] + " = '" + splitedArg[1] + "'"
+			key := strings.TrimSpace(splitedArg[0])
+			value := strings.TrimSpace(splitedArg[1])
+
+			if key == "cursor" || key == "limit" || key == "reverse" || key == "id" {
+				continue
 			}
+
+			value, err := util.NormalizeQueryValue(value)
+			if err != nil {
+				return []Log{}, err
+			}
+
+			reqDetails = reqDetails.Set(key, value)
 		}
 	}
 
-	if err := sql.Database.
-		Where(query).
+	if err := db.
+		Where(&reqDetails).
 		Order(fmt.Sprintf("id %s", order)).
 		Limit(limit).
 		Find(&reqList).Error; err != nil {
-		return nil, err
+		return []Log{}, err
 	}
 
 	sort.Slice(reqList, func(i, j int) bool {

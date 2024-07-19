@@ -26,11 +26,8 @@
           type="text"
           id="filter"
           class="w-full mt-1 p-2 border border-gray-200 rounded"
-          placeholder="Search by method, host, or path"
+          placeholder="Filter by method, host, or path"
         />
-        <p class="text-xs text-gray-500 mt-1">
-          Will affect future data fetching
-        </p>
       </div>
 
       <div class="overflow-x-auto">
@@ -150,7 +147,7 @@
          * ======================================== */
         let getData = () => {
           if (isLoaded) {
-            fetch(`/api/v1/log?limit=1&cursor=${cursor}&${filterValue}`)
+            fetch(`/api/v1/log?limit=25&cursor=${cursor}&${filterValue}`)
               .then((response) => response.json())
               .then((data) => {
                 const _data = JSON.parse(JSON.stringify(data.data));

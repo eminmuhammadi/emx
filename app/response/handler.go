@@ -16,14 +16,13 @@ limitations under the License.
 package response
 
 import (
-	"strconv"
-
 	"github.com/eminmuhammadi/emx/pkg/http"
+	"github.com/eminmuhammadi/emx/pkg/util"
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetHandler(ctx *fiber.Ctx) error {
-	id, err := strconv.ParseInt(ctx.Params("id"), 10, 64)
+	id, err := util.StringToInt64(ctx.Params("id"))
 	if err != nil {
 		return http.ErrorResponse(ctx, fiber.StatusBadRequest, nil, "Invalid ID")
 	}

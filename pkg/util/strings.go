@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -56,4 +57,41 @@ func NormalizeBody(body io.ReadCloser) string {
 
 func StringToReader(str string) io.ReadCloser {
 	return io.NopCloser(strings.NewReader(str))
+}
+
+func Contains(arr []string, str string) bool {
+	for _, item := range arr {
+		if item == str {
+			return true
+		}
+	}
+
+	return false
+}
+
+func StringToInt(str string) (int, error) {
+	num, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, err
+	}
+
+	return num, nil
+}
+
+func StringToBool(str string) (bool, error) {
+	b, err := strconv.ParseBool(str)
+	if err != nil {
+		return false, err
+	}
+
+	return b, nil
+}
+
+func StringToInt64(str string) (int64, error) {
+	num, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return num, nil
 }
