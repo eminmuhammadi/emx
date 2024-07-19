@@ -57,3 +57,13 @@ func NormalizeBody(body io.ReadCloser) string {
 func StringToReader(str string) io.ReadCloser {
 	return io.NopCloser(strings.NewReader(str))
 }
+
+func Contains(arr []string, str string) bool {
+	for _, item := range arr {
+		if item == str {
+			return true
+		}
+	}
+
+	return false
+}

@@ -89,6 +89,11 @@ func List(cursor int, limit int, reverse bool, args *fasthttp.Args) ([]Log, erro
 				return []Log{}, err
 			}
 
+			// check if key is in request.KeyWhitelist
+			if !util.Contains(request.KeyWhitelist, key) {
+				continue
+			}
+
 			db = db.Where(fmt.Sprintf("%s = ?", key), value)
 		}
 	}

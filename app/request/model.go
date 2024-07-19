@@ -22,6 +22,34 @@ import (
 	"gorm.io/gorm"
 )
 
+var KeyWhitelist = []string{
+	"session_id",
+	"method",
+	"proto",
+	"proto_major",
+	"proto_minor",
+	"header",
+	"body",
+	"content_length",
+	"transfer_encoding",
+	"host",
+	"trailer",
+	"remote_addr",
+	"request_uri",
+	"url_scheme",
+	"url_opaque",
+	"url_host",
+	"url_path",
+	"url_raw_path",
+	"url_omit_host",
+	"url_force_query",
+	"url_raw_query",
+	"url_fragment",
+	"url_raw_fragment",
+	"url_user_username",
+	"url_user_password",
+}
+
 type Request struct {
 	sql.BaseModel
 	SessionID        string `gorm:"index,unique,not null" json:"session_id"`
