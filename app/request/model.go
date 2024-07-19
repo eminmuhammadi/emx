@@ -147,3 +147,64 @@ func CreateRequestModel(ctx *goproxy.ProxyCtx) Request {
 		Body:             "", // updated on pkg/proxy/server.go
 	}
 }
+
+func (r *Request) Set(key, value string) Request {
+	if !util.Contains(KeyWhitelist, key) {
+		return *r
+	}
+
+	switch key {
+	case "session_id":
+		r.SessionID = value
+	case "method":
+		r.Method = value
+	case "proto":
+		r.Proto = value
+	case "proto_major":
+		r.ProtoMajor, _ = util.StringToInt(value)
+	case "proto_minor":
+		r.ProtoMinor, _ = util.StringToInt(value)
+	case "header":
+		r.Header = value
+	case "body":
+		r.Body = value
+	case "content_length":
+		r.ContentLength, _ = util.StringToInt64(value)
+	case "transfer_encoding":
+		r.TransferEncoding = value
+	case "host":
+		r.Host = value
+	case "trailer":
+		r.Trailer = value
+	case "remote_addr":
+		r.RemoteAddr = value
+	case "request_uri":
+		r.RequestURI = value
+	case "url_scheme":
+		r.URL.Scheme = value
+	case "url_opaque":
+		r.URL.Opaque = value
+	case "url_host":
+		r.URL.Host = value
+	case "url_path":
+		r.URL.Path = value
+	case "url_raw_path":
+		r.URL.RawPath = value
+	case "url_omit_host":
+		r.URL.OmitHost, _ = util.StringToBool(value)
+	case "url_force_query":
+		r.URL.ForceQuery, _ = util.StringToBool(value)
+	case "url_raw_query":
+		r.URL.RawQuery = value
+	case "url_fragment":
+		r.URL.Fragment = value
+	case "url_raw_fragment":
+		r.URL.RawFragment = value
+	case "url_user_username":
+		r.URL.User.Username = value
+	case "url_user_password":
+		r.URL.User.Password = value
+	}
+
+	return *r
+}

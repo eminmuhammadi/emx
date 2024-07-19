@@ -53,6 +53,7 @@ func Get(id int64) (Log, error) {
 func List(cursor int, limit int, reverse bool, args *fasthttp.Args) ([]Log, error) {
 	var reqList []request.Request
 	var reqLogList []Log
+	var reqDetails request.Request
 
 	// set order
 	order := "asc"
@@ -89,16 +90,12 @@ func List(cursor int, limit int, reverse bool, args *fasthttp.Args) ([]Log, erro
 				return []Log{}, err
 			}
 
-			// check if key is in request.KeyWhitelist
-			if !util.Contains(request.KeyWhitelist, key) {
-				continue
-			}
-
-			db = db.Where(fmt.Sprintf("%s = ?", key), value)
+			reqDetails = reqDetails.Set(key, value)
 		}
 	}
 
 	if err := db.
+		Where(&reqDetails).
 		Order(fmt.Sprintf("id %s", order)).
 		Limit(limit).
 		Find(&reqList).Error; err != nil {
