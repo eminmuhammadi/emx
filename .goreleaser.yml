@@ -5,7 +5,6 @@ env:
 
 before:
   hooks:
-    - go install mvdan.cc/garble@latest # Install garble
     - go mod tidy
     - go mod download
 
@@ -20,6 +19,17 @@ builds:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }}
     env:
       - CGO_ENABLED=0
+    gcflags:
+      - all=-trimpath={{.Env.GOPATH}}
+      - -N 
+      - -l
+    asmflags:
+      - all=-trimpath={{.Env.GOPATH}}
+    ldflags:
+      - -s
+      - -w
+      - -X main.Version={{.Version}}
+      - -X main.Commit={{.Commit}}
     goos:
       - linux
       - darwin
