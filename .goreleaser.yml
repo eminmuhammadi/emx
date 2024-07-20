@@ -1,25 +1,51 @@
+version: 2
+
 env:
   - GO111MODULE=on
 
 before:
   hooks:
+    - go install mvdan.cc/garble@latest # Install garble
+    - go mod tidy
     - go mod download
 
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+
 builds:
-  - env:
+  - gobinary: garble
+    command: "-literals"
+    flags: ["-tiny", "-seed=random", "build"]
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }}
+    env:
       - CGO_ENABLED=0
     goos:
-      - darwin
       - linux
+      - darwin
       - windows
     goarch:
       - amd64
+      - arm
       - arm64
+      - ppc64
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+universal_binaries:
+  - replace: false
 
 archives:
   - format_overrides:
       - goos: windows
         format: zip
+    files:
+      - README.md
+      - LICENSE
 
 checksum:
   name_template: "checksums.txt"
