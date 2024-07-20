@@ -12,16 +12,11 @@ metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
 
 builds:
-  - gobinary: garble
-    command: "-literals"
-    flags: ["-tiny", "-seed=random", "build"]
-    ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }}
-    env:
+  - env:
       - CGO_ENABLED=0
     gcflags:
       - all=-trimpath={{.Env.GOPATH}}
-      - -N 
+      - -N
       - -l
     asmflags:
       - all=-trimpath={{.Env.GOPATH}}
