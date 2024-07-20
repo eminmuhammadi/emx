@@ -3,6 +3,7 @@
 **emx** is a real-time proxy interceptor designed to support both the application layer and database interactions.
 
 ![emx demo](./_img.gif)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx?ref=badge_shield)
 
 ```sql
 SELECT req.method,
@@ -158,3 +159,7 @@ Distribute `_certs/ca.crt` and follow your device's trust procedures:
 - MacOS: [Learn more](https://support.apple.com/en-gb/guide/keychain-access/kyca11871/mac)
 - iPhone: [Learn more](https://support.apple.com/en-us/102390)
 - Android: [Learn more](https://developer.android.com/privacy-and-security/security-ssl#Pinning)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx?ref=badge_large)
