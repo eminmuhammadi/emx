@@ -12,14 +12,18 @@ metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
 
 builds:
-  - env:
+  - flags:
+      - -trimpath
+      - -a
+      - -tags=eminmuhammadi.com/emx
+    env:
       - CGO_ENABLED=0
     gcflags:
-      - all=-trimpath={{.Env.GOPATH}}
+      - all=-trimpath={{.Env.HOME}}
       - -N
       - -l
     asmflags:
-      - all=-trimpath={{.Env.GOPATH}}
+      - all=-trimpath={{.Env.HOME}}
     ldflags:
       - -s
       - -w
