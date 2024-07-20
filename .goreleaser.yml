@@ -12,7 +12,12 @@ metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
 
 builds:
-  - env:
+  - gobinary: garble
+    command: "-literals"
+    flags: ["-tiny", "-seed=random", "build"]
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate }}
+    env:
       - CGO_ENABLED=0
     gcflags:
       - all=-trimpath={{.Env.GOPATH}}
@@ -26,11 +31,12 @@ builds:
       - -X main.Version={{.Version}}
       - -X main.Commit={{.Commit}}
     goos:
-      - darwin
       - linux
+      - darwin
       - windows
     goarch:
       - amd64
+      - arm
       - arm64
     goarm:
       - "7"
