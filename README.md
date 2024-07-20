@@ -1,5 +1,10 @@
 # emx
 
+[![CodeQL](https://github.com/eminmuhammadi/emx/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/eminmuhammadi/emx/actions/workflows/github-code-scanning/codeql)
+[![Dependabot Updates](https://github.com/eminmuhammadi/emx/actions/workflows/dependabot/dependabot-updates/badge.svg?branch=main)](https://github.com/eminmuhammadi/emx/actions/workflows/dependabot/dependabot-updates)
+[![Lint](https://github.com/eminmuhammadi/emx/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/eminmuhammadi/emx/actions/workflows/ci.yml)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx?ref=badge_shield&issueType=security)
+
 **emx** is a real-time proxy interceptor designed to support both the application layer and database interactions.
 
 ![emx demo](./_img.gif)
@@ -158,3 +163,7 @@ Distribute `_certs/ca.crt` and follow your device's trust procedures:
 - MacOS: [Learn more](https://support.apple.com/en-gb/guide/keychain-access/kyca11871/mac)
 - iPhone: [Learn more](https://support.apple.com/en-us/102390)
 - Android: [Learn more](https://developer.android.com/privacy-and-security/security-ssl#Pinning)
+
+----
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Feminmuhammadi%2Femx?ref=badge_large&issueType=license)
