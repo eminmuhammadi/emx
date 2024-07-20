@@ -25,7 +25,7 @@ export TLS_MODE=tls
 export TLS_CA_FILE=$CERT_FOLDER/ca.crt
 export TLS_CERT_FILE=$CERT_FOLDER/server.crt
 export TLS_KEY_FILE=$CERT_FOLDER/server.key
-export SQLITE_DSN=file:emxdb.sqlite?cache=shared  # :memory:?cache=shared for in-memory database
+export SQLITE_DSN=file:emxdb.sqlite?cache=shared # :memory:?cache=shared for in-memory database
 export MOCK_FILE=mock.yaml
 
 ./emx
